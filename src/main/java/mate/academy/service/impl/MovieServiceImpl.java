@@ -24,6 +24,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> getAll() {
-        return null;
+        return movieDao.getAll();
     }
 }
+

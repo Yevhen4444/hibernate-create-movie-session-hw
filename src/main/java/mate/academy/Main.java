@@ -1,8 +1,5 @@
 package mate.academy;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import mate.academy.lib.Injector;
 import mate.academy.model.CinemaHall;
 import mate.academy.model.Movie;
@@ -11,15 +8,17 @@ import mate.academy.service.CinemaHallService;
 import mate.academy.service.MovieService;
 import mate.academy.service.MovieSessionService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         Injector injector = Injector.getInstance("mate.academy");
 
         MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
-        final CinemaHallService cinemaHallService = (CinemaHallService)
-                injector.getInstance(CinemaHallService.class);
-        final MovieSessionService movieSessionService = (MovieSessionService)
-                injector.getInstance(MovieSessionService.class);
+        CinemaHallService cinemaHallService = (CinemaHallService) injector.getInstance(CinemaHallService.class);
+        MovieSessionService movieSessionService = (MovieSessionService) injector.getInstance(MovieSessionService.class);
 
         Movie fastAndFurious = new Movie("Fast and Furious");
         fastAndFurious.setDescription("An action film about street racing, heists, and spies.");
@@ -42,31 +41,23 @@ public class Main {
         movieSessionService.add(session2);
 
         System.out.println("All movies:");
-        List<Movie> allMovies = movieService.getAll();
-        if (allMovies != null && !allMovies.isEmpty()) {
-            allMovies.forEach(System.out::println);
-        } else {
-            System.out.println("No movies found.");
-        }
+        movieService.getAll().forEach(System.out::println);
 
         System.out.println("\nAll cinema halls:");
-        List<CinemaHall> allHalls = cinemaHallService.getAll();
-        if (allHalls != null && !allHalls.isEmpty()) {
-            allHalls.forEach(ch -> System.out.println(ch.getDescription()));
-        }
+        cinemaHallService.getAll().forEach(ch -> System.out.println(ch.getDescription()));
+
+        System.out.println("\nTesting get methods:");
+        System.out.println("CinemaHall by ID: " + cinemaHallService.get(mainHall.getId()).getDescription());
+        System.out.println("MovieSession by ID: " + movieSessionService.get(session1.getId()).getShowTime());
 
         LocalDate date = LocalDate.of(2025, 12, 2);
-        List<MovieSession> availableSessions = movieSessionService
-                .findAvailableSessions(fastAndFurious.getId(), date);
+        List<MovieSession> availableSessions = movieSessionService.findAvailableSessions(fastAndFurious.getId(), date);
+
         System.out.println("\nAvailable sessions on " + date + ":");
-        if (availableSessions != null && !availableSessions.isEmpty()) {
-            availableSessions.forEach(s -> System.out.println(
-                    "Movie: " + s.getMovie().getTitle()
-                           + ", Hall: " + s.getCinemaHall().getDescription()
-                           + ", Time: " + s.getShowTime()
-            ));
-        } else {
-            System.out.println("No sessions available.");
-        }
+        availableSessions.forEach(s -> System.out.println(
+                "Movie: " + s.getMovie().getTitle() +
+                        ", Hall: " + s.getCinemaHall().getDescription() +
+                        ", Time: " + s.getShowTime()
+        ));
     }
 }

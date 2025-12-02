@@ -1,5 +1,8 @@
 package mate.academy;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import mate.academy.lib.Injector;
 import mate.academy.model.CinemaHall;
 import mate.academy.model.Movie;
@@ -8,17 +11,15 @@ import mate.academy.service.CinemaHallService;
 import mate.academy.service.MovieService;
 import mate.academy.service.MovieSessionService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
 public class Main {
     public static void main(String[] args) {
         Injector injector = Injector.getInstance("mate.academy");
 
         MovieService movieService = (MovieService) injector.getInstance(MovieService.class);
-        CinemaHallService cinemaHallService = (CinemaHallService) injector.getInstance(CinemaHallService.class);
-        MovieSessionService movieSessionService = (MovieSessionService) injector.getInstance(MovieSessionService.class);
+        final CinemaHallService cinemaHallService = (CinemaHallService)
+                injector.getInstance(CinemaHallService.class);
+        final MovieSessionService movieSessionService = (MovieSessionService)
+                injector.getInstance(MovieSessionService.class);
 
         Movie fastAndFurious = new Movie("Fast and Furious");
         fastAndFurious.setDescription("An action film about street racing, heists, and spies.");
@@ -47,17 +48,19 @@ public class Main {
         cinemaHallService.getAll().forEach(ch -> System.out.println(ch.getDescription()));
 
         System.out.println("\nTesting get methods:");
-        System.out.println("CinemaHall by ID: " + cinemaHallService.get(mainHall.getId()).getDescription());
-        System.out.println("MovieSession by ID: " + movieSessionService.get(session1.getId()).getShowTime());
+        System.out.println("CinemaHall by ID: "
+                + cinemaHallService.get(mainHall.getId()).getDescription());
+        System.out.println("MovieSession by ID: "
+                + movieSessionService.get(session1.getId()).getShowTime());
 
         LocalDate date = LocalDate.of(2025, 12, 2);
-        List<MovieSession> availableSessions = movieSessionService.findAvailableSessions(fastAndFurious.getId(), date);
-
+        List<MovieSession> availableSessions = movieSessionService
+                .findAvailableSessions(fastAndFurious.getId(), date);
         System.out.println("\nAvailable sessions on " + date + ":");
         availableSessions.forEach(s -> System.out.println(
-                "Movie: " + s.getMovie().getTitle() +
-                        ", Hall: " + s.getCinemaHall().getDescription() +
-                        ", Time: " + s.getShowTime()
+                "Movie: " + s.getMovie().getTitle()
+                       + ", Hall: " + s.getCinemaHall().getDescription()
+                       + ", Time: " + s.getShowTime()
         ));
     }
 }
